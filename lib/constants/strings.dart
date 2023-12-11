@@ -23,3 +23,11 @@ const newTrans = "New Transaction",
     dabit = "Dabit",
     cradit = "Cradit",
     done = "Done";
+//transaction details screen strings
+const title = "Transaction Detail",
+    accName = "Account",
+    transTitle = "Title",
+    transDesc = "Discreption",
+    transType = "Transaction Type",
+    dateTime = "Date Time",
+    amount = "Amount";

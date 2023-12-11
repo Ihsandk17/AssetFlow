@@ -14,20 +14,22 @@ class Home extends StatelessWidget {
       extendBody: true,
       body: Obx(() => controller.screen[controller.currentIndex.value]),
       floatingActionButton: ClipOval(
-        child: Obx(
-          () => FloatingActionButton(
-            backgroundColor: prussianBlue,
-            child: Icon(
-              Icons.add,
-              color:
-                  controller.currentIndex.value == 4 ? greenColor : greyColor,
-              size: 30,
-            ),
-            onPressed: () {
-              controller.currentIndex.value = 4;
-            },
-          ),
-        ),
+        child: Obx(() => Visibility(
+              visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+              child: FloatingActionButton(
+                backgroundColor: prussianBlue,
+                child: Icon(
+                  Icons.add,
+                  color: controller.currentIndex.value == 4
+                      ? greenColor
+                      : greyColor,
+                  size: 30,
+                ),
+                onPressed: () {
+                  controller.currentIndex.value = 4;
+                },
+              ),
+            )),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Obx(

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:daxno_task/utils/database_helper.dart';
 import 'package:daxno_task/utils/transaction_model.dart';
 import 'package:get/get.dart';
@@ -6,7 +8,7 @@ class AddTransController extends GetxController {
   RxString selectedAccount = ''.obs;
   RxString selectedTransType = ''.obs;
   RxString transName = ''.obs;
-  // RxString transDes = ''.obs;
+  RxString transDes = ''.obs;
   RxDouble transAmount = RxDouble(0.0);
 
   var totalAmount = 0.0.obs;
@@ -15,14 +17,14 @@ class AddTransController extends GetxController {
     String? account,
     String? transType,
     String? transName,
-    // String? transDes,
+    String? transDes,
     double? transAmount,
   }) {
     if (account != null) selectedAccount.value = account;
     if (transType != null) selectedTransType.value = transType;
     if (transName != null) this.transName.value = transName;
     if (transAmount != null) this.transAmount.value = transAmount;
-    // if (transDes != null) this.transDes.value = transDes;
+    if (transDes != null) this.transDes.value = transDes;
   }
 
   Future<void> insertNewTransaction() async {
@@ -40,14 +42,13 @@ class AddTransController extends GetxController {
     try {
       // Create a TransactionModel object
       TransactionModel transaction = TransactionModel(
-        // Note: accountId will be updated in the insertTransaction method
-        accountId: 0, // Placeholder value
-        transactionType: selectedTransType.value,
-        transactionName: transName.value,
-        transactionTime: DateTime.now(),
-        transactionAmount: transAmount.value,
-        // transactionDes: transDes.value
-      );
+          // Note: accountId will be updated in the insertTransaction method
+          accountId: 0, // Placeholder value
+          transactionType: selectedTransType.value,
+          transactionName: transName.value,
+          transactionTime: DateTime.now(),
+          transactionAmount: transAmount.value,
+          transactionDes: transDes.value);
 
       // Insert the new transaction into the database with the associated account
       await DatabaseHelper()
@@ -58,7 +59,7 @@ class AddTransController extends GetxController {
       selectedTransType.value = '';
       transName.value = '';
       transAmount.value = 0.0;
-      // transDes.value = '';
+      transDes.value = '';
     } catch (e) {
       // Handle the exception, e.g., show an error message
       //print("Error inserting transaction: $e");
@@ -76,6 +77,8 @@ class AddTransController extends GetxController {
       for (var account in accounts) {
         totalAmount += account['currentamount'];
       }
+      // print(
+      //     "total amount: $totalAmount this.totalamount.value ${this.totalAmount.value}");
 
       // Log the change in total amount for all accounts, if changes ocure
       if (totalAmount != this.totalAmount.value) {

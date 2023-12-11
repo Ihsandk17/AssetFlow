@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:daxno_task/constants/const.dart';
 import 'package:daxno_task/controllers/state_controller.dart';
 import 'package:daxno_task/utils/transaction_model.dart';
@@ -81,7 +83,7 @@ class _CalenderClassState extends State<CalenderClass> {
       selectionDecoration: BoxDecoration(border: Border.all(color: greyColor)),
       monthViewSettings: const MonthViewSettings(
         showAgenda: true,
-        agendaItemHeight: 55,
+        agendaItemHeight: 60,
         agendaViewHeight: 300,
         agendaStyle: AgendaStyle(
           placeholderTextStyle: TextStyle(color: Colors.red),
@@ -96,24 +98,40 @@ class _CalenderClassState extends State<CalenderClass> {
           (BuildContext context, CalendarAppointmentDetails details) {
         final Meeting meeting = details.appointments.first as Meeting;
 
+        List<Color> myColors = [
+          prussianBlue,
+          blackColor,
+          darkPrussianBlue,
+          greyColor,
+          Colors.yellow,
+          Colors.purple,
+          Colors.orange,
+          // Add more colors as needed
+        ];
+
         return Container(
           decoration: BoxDecoration(
-            color: meeting.background,
-            border: Border.all(color: meeting.background),
-            borderRadius: BorderRadius.circular(5.0),
+            color: myColors[Random().nextInt(myColors.length)],
+            // border: Border.all(
+            //   color:
+            //       Colors.primaries[Random().nextInt(Colors.primaries.length)],
+            // ),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       meeting.eventName,
-                      style: const TextStyle(
-                        color: whiteColor,
+                      style: TextStyle(
+                        color: meeting.transactionType == 'added'
+                            ? greenColor
+                            : Colors.red,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -121,7 +139,7 @@ class _CalenderClassState extends State<CalenderClass> {
                     Text(
                       DateFormat('hh:mm a').format(meeting.from),
                       style: const TextStyle(
-                        color: greyColor,
+                        color: whiteColor,
                         fontSize: 10,
                       ),
                     ),
@@ -133,14 +151,16 @@ class _CalenderClassState extends State<CalenderClass> {
                     Text(
                       meeting.transactionType,
                       style: const TextStyle(
-                        color: whiteColor,
+                        color: Colors.white,
                         fontSize: 12,
                       ),
                     ),
                     Text(
                       meeting.transactionAmount.toString(),
-                      style: const TextStyle(
-                        color: Colors.red,
+                      style: TextStyle(
+                        color: meeting.transactionType == 'added'
+                            ? greenColor
+                            : Colors.red,
                         fontSize: 12,
                       ),
                     ),
@@ -168,7 +188,7 @@ class _CalenderClassState extends State<CalenderClass> {
           transaction.transactionName,
           transaction.transactionTime,
           transaction.transactionTime.add(const Duration(hours: 2)),
-          Colors.blue,
+          prussianBlue,
           false,
           transaction.transactionName,
           transaction.transactionType,

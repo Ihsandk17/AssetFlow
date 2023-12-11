@@ -8,16 +8,21 @@ Widget homeButtons(
     String? title,
     onPress}) {
   return GestureDetector(
-    onTap: () {},
+    onTap: onPress,
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
         width: width,
         height: height,
         decoration: const BoxDecoration(
-          boxShadow: [BoxShadow(blurRadius: 1.5, color: blackColor)],
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 2.0,
+              color: blackColor,
+            )
+          ],
           borderRadius: BorderRadius.all(Radius.circular(15)),
-          color: cornflowerBlue,
+          gradient: buttonColor2,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

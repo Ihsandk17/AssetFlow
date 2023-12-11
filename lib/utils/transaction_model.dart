@@ -2,17 +2,18 @@ class TransactionModel {
   int accountId;
   String transactionType;
   String transactionName;
-  // String transactionDes;
+  String transactionDes;
   DateTime transactionTime;
   double transactionAmount;
 
-  TransactionModel(
-      {required this.accountId,
-      required this.transactionType,
-      required this.transactionName,
-      // required this.transactionDes,
-      required this.transactionTime,
-      required this.transactionAmount});
+  TransactionModel({
+    required this.accountId,
+    required this.transactionType,
+    required this.transactionName,
+    required this.transactionDes,
+    required this.transactionTime,
+    required this.transactionAmount,
+  });
 
   // Convert the TransactionModel object to a Map
   Map<String, dynamic> toMap() {
@@ -20,7 +21,7 @@ class TransactionModel {
       'accountId': accountId,
       'transactionType': transactionType,
       'transactionName': transactionName,
-      //  'transactionDes': transactionDes,
+      'transactionDes': transactionDes,
       'transactionTime':
           transactionTime.toIso8601String(), // Convert DateTime to String
       'transactionAmount': transactionAmount,
@@ -33,7 +34,7 @@ class TransactionModel {
       accountId: map['accountId'],
       transactionType: map['transactionType'],
       transactionName: map['transactionName'],
-      // transactionDes: map['transactionDes'],
+      transactionDes: map['transactionDes'],
       transactionTime: DateTime.parse(map['transactionTime']),
       transactionAmount: map['transactionAmount'].toDouble(), // Cast to double
     );

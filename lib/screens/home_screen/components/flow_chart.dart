@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:daxno_task/constants/colors.dart';
 import 'package:daxno_task/controllers/home_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -18,11 +20,6 @@ class LineChart2 extends StatefulWidget {
 }
 
 class _LineChart2State extends State<LineChart2> {
-  List<Color> gradientColors = [
-    Color.fromRGBO(59, 117, 179, 1),
-    Color.fromRGBO(1, 102, 209, 1),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -160,19 +157,19 @@ class _LineChart2State extends State<LineChart2> {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: spots,
+          // spots: spots,
 
-          // spots: const [
-          //   FlSpot(0, 3),
-          //   FlSpot(2.6, 2),
-          //   FlSpot(4.9, 5),
-          //   FlSpot(6.8, 3.1),
-          //   FlSpot(8, 4),
-          //   FlSpot(9.5, 3),
-          //   FlSpot(11, 4),
-          // ],
+          spots: const [
+            FlSpot(0, 3),
+            FlSpot(2.6, 2),
+            FlSpot(4.9, 5),
+            FlSpot(6.8, 3.1),
+            FlSpot(8, 4),
+            FlSpot(9.5, 3),
+            FlSpot(11, 4),
+          ],
           isCurved: true,
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: gradientColors,
           ),
           barWidth: 3,
@@ -183,6 +180,9 @@ class _LineChart2State extends State<LineChart2> {
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: const [0.0, 1.0],
               colors: gradientColors
                   .map((color) => color.withOpacity(0.3))
                   .toList(),

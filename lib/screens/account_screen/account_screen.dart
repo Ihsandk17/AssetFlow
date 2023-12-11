@@ -1,7 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:daxno_task/controllers/acc_controller.dart';
-import 'package:daxno_task/sreens/account_screen/components/accounts_button.dart';
-import 'package:daxno_task/sreens/account_screen/components/add_plan_screen.dart';
-import 'package:daxno_task/sreens/account_screen/components/barchart.dart';
+import 'package:daxno_task/screens/account_screen/components/accounts_button.dart';
+import 'package:daxno_task/screens/account_screen/components/add_plan_screen.dart';
+import 'package:daxno_task/screens/account_screen/components/barchart.dart';
+import 'package:daxno_task/screens/add_transaction_screen/trans_details_screen.dart';
+import 'package:daxno_task/screens/home_screen/components/account_detail_screen.dart';
 import 'package:daxno_task/utils/database_helper.dart';
 import 'package:daxno_task/widgets/text_style.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +20,8 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     final AccController controller = Get.put(AccController());
 
     return Scaffold(
@@ -23,13 +29,13 @@ class AccountScreen extends StatelessWidget {
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 5),
+                padding: EdgeInsets.only(left: screenWidth * 0.015),
                 child: Container(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.width / 4,
+                  width: screenWidth * 1,
+                  height: screenHeight * 0.12,
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(blurRadius: 1.0, color: Colors.black)
@@ -43,10 +49,12 @@ class AccountScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 35, right: 8),
+                        padding: EdgeInsets.only(
+                            top: screenHeight * 0.05,
+                            right: screenWidth * 0.01),
                         child: TextButton(
                           onPressed: () {
-                            Get.to(const AddNewPlan());
+                            Get.to(() => const AddNewPlan());
                           },
                           child: Row(
                             children: [
@@ -80,7 +88,10 @@ class AccountScreen extends StatelessWidget {
                     if (accounts.isEmpty) {
                       // Display a message when there are no accounts
                       return Center(
-                          child: boldText(text: "Not found any Account!"));
+                          child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: boldText(text: "No Any Account Added!"),
+                      ));
                     }
 
                     Future.delayed(Duration.zero, () {
@@ -101,13 +112,21 @@ class AccountScreen extends StatelessWidget {
                                 controller.selectedIndex.value == index;
                             return Center(
                               child: AccountButtons(
+                                width: screenWidth * 0.43,
+                                height: screenHeight * 0.19,
+                                color: isSelected
+                                    ? buttonColor
+                                    : buttonColor2, // Highlight color
+                                icon: isSelected
+                                    ? const Icon(
+                                        Icons.check_circle,
+                                        color:
+                                            Color.fromARGB(255, 138, 251, 217),
+                                      )
+                                    : null,
                                 title: accounts[index]['title'],
                                 amount: '\$${accounts[index]['currentamount']}',
-                                width: 150,
-                                height: 150,
-                                color: isSelected
-                                    ? prussianBlue
-                                    : cornflowerBlue, // Highlight color
+
                                 onPress: () async {
                                   controller.setSelectedAccount(
                                     index,
@@ -125,6 +144,10 @@ class AccountScreen extends StatelessWidget {
                                   // Update selected transactions in the controller
                                   controller.updateTransactions(transactions);
                                 },
+                                onLongPress: () {
+                                  Get.to(() => AccountDetailScreen(
+                                      accounts: accounts[index]));
+                                },
                               ),
                             );
                           },
@@ -136,28 +159,39 @@ class AccountScreen extends StatelessWidget {
               ),
 
               SizedBox(
-                height: 200,
-                width: MediaQuery.of(context).size.width / 1.02,
+                height: screenHeight * 0.3,
+                width: screenWidth * 0.99,
                 child: const BarChartSample(),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.03),
 
-              //Recent Transaction List
+              Padding(
+                padding: EdgeInsets.all(screenWidth * 0.035),
+                child: const Divider(
+                  thickness: 1,
+                  color: greyColor,
+                ),
+              ),
+
+              //Selected account Transaction List
               Column(
                 children: [
                   ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(15)),
                     child: Container(
-                      height: 30,
-                      width: 200,
-                      color: prussianBlue,
+                      height: screenHeight * 0.04,
+                      width: screenWidth * 0.6,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                        colors: transColor,
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      )),
                       child: Center(child: boldText(text: "Transactions")),
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: screenHeight * 0.025),
                   Obx(
                     () {
                       try {
@@ -172,10 +206,25 @@ class AccountScreen extends StatelessWidget {
                                 var transaction =
                                     controller.selectedTransactions[index];
                                 var isAdded = transaction.transactionType;
-                                return Card(
-                                  color: cornflowerBlue,
+                                return Container(
+                                  margin: EdgeInsets.only(bottom: 5),
+                                  height: screenHeight * 0.09,
+                                  width: screenWidth * 0.98,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: transColor,
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15))),
                                   child: ListTile(
-                                    onTap: () async {},
+                                    onTap: () async {
+                                      Get.to(() => TransDetailsScreen(
+                                            transaction: transaction,
+                                            accountName: controller
+                                                .selectedAccountTitle.value,
+                                          ));
+                                    },
                                     leading: isAdded == 'added'
                                         ? const Icon(
                                             Icons.arrow_downward,
@@ -216,7 +265,7 @@ class AccountScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 60)
+              SizedBox(height: screenHeight * 0.08)
             ],
           ),
         ));

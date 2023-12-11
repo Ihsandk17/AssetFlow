@@ -15,7 +15,7 @@ class DropDownButtonAcc extends StatefulWidget {
 }
 
 class _DropDownButtonAccState extends State<DropDownButtonAcc> {
-  String? value;
+  String? selectedName;
 
   @override
   void initState() {
@@ -23,8 +23,9 @@ class _DropDownButtonAccState extends State<DropDownButtonAcc> {
 
     // Set the default value to the first item in the list
     if (widget.item.isNotEmpty) {
-      value = widget.item[0];
-      widget.onSelected(value!);
+      selectedName = widget.item[0];
+
+      widget.onSelected(selectedName!);
     }
   }
 
@@ -35,13 +36,13 @@ class _DropDownButtonAccState extends State<DropDownButtonAcc> {
       dropdownColor: prussianBlue,
       menuMaxHeight: 250,
       borderRadius: const BorderRadius.all(Radius.circular(15)),
-      value: value,
+      value: selectedName,
       items: widget.item.map((String item) {
         return buildMenuItem(item);
       }).toList(),
       onChanged: (newValue) {
         setState(() {
-          value = newValue;
+          selectedName = newValue;
           widget.onSelected(newValue!);
         });
       },

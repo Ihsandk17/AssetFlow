@@ -6,16 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class MoreScreen extends StatefulWidget {
+class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
 
   @override
-  State<MoreScreen> createState() => _MoreScreenState();
-}
-
-class _MoreScreenState extends State<MoreScreen> {
-  @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     final MoreController controller = Get.put(MoreController());
 
     void showImagePickerOptions(BuildContext context) {
@@ -57,8 +55,8 @@ class _MoreScreenState extends State<MoreScreen> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              const SizedBox(
-                height: 20.0,
+              SizedBox(
+                height: screenHeight * 0.03,
               ),
               Center(
                 child: Obx(
@@ -66,13 +64,13 @@ class _MoreScreenState extends State<MoreScreen> {
                     children: [
                       controller.image.value != null
                           ? CircleAvatar(
-                              radius: 64,
+                              radius: screenWidth * 0.18,
                               backgroundImage:
                                   MemoryImage(controller.image.value!),
                             )
-                          : const CircleAvatar(
-                              radius: 64,
-                              backgroundImage: NetworkImage(
+                          : CircleAvatar(
+                              radius: screenWidth * 0.18,
+                              backgroundImage: const NetworkImage(
                                   'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701_640.png'),
                             ),
                       Positioned(
@@ -91,12 +89,18 @@ class _MoreScreenState extends State<MoreScreen> {
                 ),
               ),
 
-              const SizedBox(
-                height: 15,
+              SizedBox(
+                height: screenHeight * 0.050,
               ),
-              boldText(text: "Profile Name"),
-              const SizedBox(
-                height: 20,
+
+              boldText(text: "Profile Name", textAlign: TextAlign.center),
+
+              Padding(
+                padding: EdgeInsets.only(
+                    left: screenWidth * 0.05,
+                    right: screenWidth * 0.05,
+                    bottom: screenHeight * 0.03),
+                child: const Divider(thickness: 1.0, color: greyColor),
               ),
 
               //profile screens
@@ -110,7 +114,11 @@ class _MoreScreenState extends State<MoreScreen> {
                     height: 60,
                     width: 100,
                     decoration: const BoxDecoration(
-                        color: prussianBlue,
+                        gradient: LinearGradient(
+                          colors: transColor,
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -130,9 +138,10 @@ class _MoreScreenState extends State<MoreScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             normalText(
-                                text: accTitleList[index],
-                                color: whiteColor,
-                                size: 16.0),
+                              text: accTitleList[index],
+                              color: whiteColor,
+                              size: 16.0,
+                            ),
                             const SizedBox(
                               width: 20,
                             ),
@@ -148,16 +157,17 @@ class _MoreScreenState extends State<MoreScreen> {
                   );
                 },
               ),
-              const SizedBox(
-                height: 15,
+
+              Padding(
+                padding: EdgeInsets.only(
+                  left: screenWidth * 0.05,
+                  right: screenWidth * 0.05,
+                  bottom: screenHeight * 0.03,
+                  top: screenHeight * 0.03,
+                ),
+                child: const Divider(thickness: 1.0, color: greyColor),
               ),
-              const Divider(
-                color: greyColor,
-                thickness: 0.5,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
+
               //GridView Buttons
               GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -175,6 +185,9 @@ class _MoreScreenState extends State<MoreScreen> {
                     onPress: () {},
                   );
                 },
+              ),
+              const SizedBox(
+                height: 10.0,
               )
             ],
           ),

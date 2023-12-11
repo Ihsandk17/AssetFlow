@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:daxno_task/utils/database_helper.dart';
 import 'package:daxno_task/utils/transaction_model.dart';
 import 'package:get/get.dart';
@@ -28,7 +30,7 @@ class StateController extends GetxController {
 
       return transactions;
     } catch (e) {
-      print("Error in retriving transactions ${e}");
+      print("Error in retriving transactions $e");
     }
     return [];
   }

@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:daxno_task/sreens/more_screen/screens/accounts.dart';
-import 'package:daxno_task/sreens/more_screen/screens/backup.dart';
-import 'package:daxno_task/sreens/more_screen/screens/profile.dart';
-import 'package:daxno_task/sreens/more_screen/screens/setting.dart';
+import 'package:daxno_task/screens/more_screen/screens/accounts.dart';
+import 'package:daxno_task/screens/more_screen/screens/backup.dart';
+import 'package:daxno_task/screens/more_screen/screens/profile.dart';
+import 'package:daxno_task/screens/more_screen/screens/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

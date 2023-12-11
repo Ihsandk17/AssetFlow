@@ -34,4 +34,27 @@ class AccController extends GetxController {
   void updateTransactions(List<TransactionModel> transactions) {
     selectedTransactions.assignAll(transactions);
   }
+
+//Method to retrieve  added transactions for the selected account
+  double addedTrans() {
+    double added = 0.0;
+
+    for (TransactionModel transaction in selectedTransactions) {
+      if (transaction.transactionType == 'added') {
+        added += transaction.transactionAmount;
+      }
+    }
+    return added;
+  }
+
+  //Method to retrieve expended transactions for the selected account
+  double expendedTrans() {
+    double expend = 0.0;
+    for (TransactionModel transaction in selectedTransactions) {
+      if (transaction.transactionType == 'expended') {
+        expend += transaction.transactionAmount;
+      }
+    }
+    return expend;
+  }
 }

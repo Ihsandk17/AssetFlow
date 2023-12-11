@@ -1,4 +1,4 @@
-import 'package:daxno_task/sreens/state_screen/components/calender.dart';
+import 'package:daxno_task/screens/state_screen/components/calender.dart';
 import 'package:daxno_task/widgets/circular_indicator.dart';
 import 'package:daxno_task/widgets/text_style.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +16,16 @@ class StateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: EdgeInsets.only(left: screenWidth * 0.015),
             child: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.width / 3.7,
+              width: screenWidth * 1,
+              height: screenHeight * 0.12,
               decoration: const BoxDecoration(
                 boxShadow: [BoxShadow(blurRadius: 1.0, color: Colors.black)],
                 color: prussianBlue,
@@ -52,12 +54,11 @@ class StateScreen extends StatelessWidget {
                         List<String> accountNames = snapshot.data!;
 
                         return Padding(
-                          padding: const EdgeInsets.only(top: 43),
+                          padding: EdgeInsets.only(top: screenHeight * 0.059),
                           child: DropDownButtonAcc(
                             item: accountNames,
                             onSelected: (selectedAcount) async {
                               controller.selectedAccountName.value =
-                                  // ignore: await_only_futures
                                   await selectedAcount;
                             },
                           ),
@@ -74,11 +75,10 @@ class StateScreen extends StatelessWidget {
           ),
           Center(
             child: SizedBox(
-              height: MediaQuery.of(context).size.height / 1.28,
-              width: MediaQuery.of(context).size.width / 1.01,
+              height: screenHeight * 0.79,
+              width: screenWidth * 0.98,
               child: Obx(() {
                 var selectedAccountName = controller.selectedAccountName.value;
-
                 return CalenderClass(selectedAccountName: selectedAccountName);
               }),
             ),

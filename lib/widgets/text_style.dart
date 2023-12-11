@@ -7,9 +7,14 @@ Widget normalText({text, color = Colors.white, size = 14.0}) {
   );
 }
 
-Widget boldText({text, color = Colors.white, size = 20.0}) {
+Widget boldText({text, color = Colors.white, size = 20.0, textAlign}) {
   return Text(
     "$text",
-    style: TextStyle(color: color, fontSize: size, fontWeight: FontWeight.bold),
+    textAlign: textAlign,
+    style: TextStyle(
+      color: color,
+      fontSize: size,
+      fontWeight: FontWeight.bold,
+    ),
   );
 }

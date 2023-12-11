@@ -33,7 +33,7 @@ class DatabaseHelper {
             title TEXT,
             description TEXT,
             currentamount REAL,
-            createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            createdAt TIMESTAMP
           )
         ''');
 
@@ -43,7 +43,7 @@ class DatabaseHelper {
       accountId INTEGER,
       transactionType TEXT,
       transactionName TEXT,
-  
+      transactionDes Text,
       transactionTime TIMESTAMP,
       transactionAmount REAL,
       FOREIGN KEY (accountId) REFERENCES account_name(id)
@@ -63,13 +63,15 @@ class DatabaseHelper {
   }
 
   //Create a Method to insert new account into database
-  Future<void> insertAccount(String accName, int currentAmount) async {
+  Future<void> insertAccount(
+      String accName, String desc, int currentAmount) async {
     final Database db = await database;
 
     await db.insert(
       'account_name',
       {
         'title': accName,
+        'description': desc,
         'currentamount': currentAmount,
         'createdAt': DateTime.now().toIso8601String()
       },
@@ -114,7 +116,7 @@ class DatabaseHelper {
             'accountId': transaction.accountId,
             'transactionType': transaction.transactionType,
             'transactionName': transaction.transactionName,
-            //'transactionDes': transaction.transactionDes,
+            'transactionDes': transaction.transactionDes,
             'transactionTime': transaction.transactionTime.toIso8601String(),
             'transactionAmount': transaction
                 .transactionAmount, // Ensure it's treated as a double
@@ -160,17 +162,6 @@ class DatabaseHelper {
         where: 'id = ?',
         whereArgs: [accountId],
       );
-
-      // Insert a record into the total_amount_changes table
-      // await db.insert(
-      //   'total_amount_changes',
-      //   {
-      //     'changeType': transactionType,
-      //     'changeAmount': transactionAmount,
-      //     'changeTime': DateTime.now().toIso8601String(),
-      //   },
-      //   conflictAlgorithm: ConflictAlgorithm.replace,
-      // );
     }
   }
 
@@ -263,7 +254,7 @@ class DatabaseHelper {
                 accountId: map['accountId'],
                 transactionType: map['transactionType'],
                 transactionName: map['transactionName'],
-                // transactionDes: map['transactionDes'],
+                transactionDes: map['transactionDes'],
                 transactionTime: DateTime.parse(map['transactionTime']),
                 transactionAmount: (map['transactionAmount']).toDouble(),
               ))
@@ -285,7 +276,7 @@ class DatabaseHelper {
               accountId: map['accountId'],
               transactionType: map['transactionType'],
               transactionName: map['transactionName'],
-              // transactionDes: map['transactionDes'],
+              transactionDes: map['transactionDes'],
               transactionTime: DateTime.parse(map['transactionTime']),
               transactionAmount: (map['transactionAmount']).toDouble(),
             ))
@@ -312,5 +303,21 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getTotalAmountChanges() async {
     final Database db = await database;
     return await db.query('total_amount_changes');
+  }
+
+  // Method to get account name using account id
+  Future<String?> getAccountName(int accountId) async {
+    final Database db = await database;
+    List<Map<String, dynamic>> result = await db.query(
+      'account_name',
+      columns: ['title'],
+      where: 'id = ?',
+      whereArgs: [accountId],
+    );
+    if (result.isNotEmpty) {
+      return result.first['title'] as String?;
+    } else {
+      return null; // Account not found
+    }
   }
 }

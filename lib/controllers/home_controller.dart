@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_print, empty_catches
 
-import 'package:daxno_task/sreens/account_screen/account_screen.dart';
-import 'package:daxno_task/sreens/add_transaction_screen/add_transaction_screen.dart';
-import 'package:daxno_task/sreens/home_screen/home_screen.dart';
-import 'package:daxno_task/sreens/more_screen/more_screen.dart';
-import 'package:daxno_task/sreens/state_screen/state_screen.dart';
+import 'package:daxno_task/screens/account_screen/account_screen.dart';
+import 'package:daxno_task/screens/add_transaction_screen/add_transaction_screen.dart';
+import 'package:daxno_task/screens/home_screen/home_screen.dart';
+import 'package:daxno_task/screens/more_screen/more_screen.dart';
+import 'package:daxno_task/screens/state_screen/state_screen.dart';
 import 'package:daxno_task/utils/database_helper.dart';
 import 'package:daxno_task/utils/transaction_model.dart';
 import 'package:get/get.dart';
@@ -135,21 +135,6 @@ class HomeController extends GetxController {
       // Get total amount changes from the database
       List<Map<String, dynamic>> totalChanges =
           await DatabaseHelper().getTotalAmountChanges();
-
-      // List<double> totalChangedAmounts = totalChanges
-      //     .map((data) => (data['changeAmount'] as num).toDouble())
-      //     .toList();
-      // // print("total changes amounts $totalChangedAmounts");
-
-      // List<String> changesTime =
-      //     totalChanges.map((data) => (data['changeTime']).toString()).toList();
-
-      // // print("amount changed times $changesTime");
-
-      // return {
-      //   'totalChangedAmounts': totalChangedAmounts,
-      //   'changesTime': changesTime,
-      // };
       return totalChanges;
     } catch (e) {
       print('Error updating line chart data: $e');

@@ -1,6 +1,8 @@
 import 'package:daxno_task/controllers/acc_controller.dart';
 import 'package:daxno_task/controllers/home_controller.dart';
-import 'package:daxno_task/sreens/home_screen/components/flow_chart.dart';
+import 'package:daxno_task/screens/add_transaction_screen/trans_details_screen.dart';
+import 'package:daxno_task/screens/home_screen/components/account_detail_screen.dart';
+import 'package:daxno_task/screens/home_screen/components/flow_chart.dart';
 import 'package:daxno_task/utils/database_helper.dart';
 import 'package:daxno_task/utils/transaction_model.dart';
 import 'package:daxno_task/widgets/circular_indicator.dart';
@@ -44,6 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     final AccController accountController = Get.put(AccController());
     //List<TransactionModel> transactions = [];
 
@@ -58,24 +63,23 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // select time row for graph
                 Padding(
-                  padding: const EdgeInsets.only(top: 160),
+                  padding: EdgeInsets.only(top: screenHeight * 0.21),
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 5),
+                        padding: EdgeInsets.only(left: screenWidth * 0.015),
                         child: Container(
+                          width: screenWidth * 1,
+                          height: screenHeight * 0.099,
                           decoration: const BoxDecoration(
-                              color: Colors.greenAccent,
+                              color: greenColor,
                               boxShadow: [
                                 BoxShadow(blurRadius: 1.0),
                               ],
                               borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(25.0))),
-                          height: 80,
-                          //width: MediaQuery.of(context).size.width / 3 * 2.8,
-
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 30),
+                            padding: EdgeInsets.only(top: screenHeight * 0.04),
                             child: Obx(
                               () => Row(
                                 mainAxisAlignment:
@@ -147,10 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height / 3.5,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only()),
+                      SizedBox(
+                        height: screenHeight * 0.29,
+                        width: double.infinity,
                         child: FutureBuilder<List<Map<String, dynamic>>>(
                           future: controller.updateLineChartData(),
                           builder: (context, snapshot) {
@@ -163,7 +166,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (snapshot.hasData) {
                                 final changeData = snapshot.data;
 
-                                print("change data!!!! ${changeData}");
+                                // ignore: avoid_print
+                                print("change data!!!! $changeData");
                                 return LineChart2(
                                   totalChangedData: changeData!,
                                   homeController: controller,
@@ -188,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 //top card
                 Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                  padding: EdgeInsets.only(left: screenWidth * 0.015),
                   child: Container(
                     decoration: const BoxDecoration(
                       boxShadow: [
@@ -198,111 +202,107 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius:
                           BorderRadius.only(bottomLeft: Radius.circular(20)),
                     ),
-                    //width: MediaQuery.of(context).size.width / 3 * 2.8,
-                    height: MediaQuery.of(context).size.width / 1.95,
+                    width: screenWidth * 1,
+                    height: screenHeight * 0.24,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 45),
+                      padding: EdgeInsets.only(top: screenHeight * 0.07),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8, left: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                boldText(
-                                  text: totalNetworth,
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Obx(
-                                  () {
-                                    double totalAmount =
-                                        controller.totalAmount.value;
-                                    return boldText(
-                                      text: '\$$totalAmount',
-                                    );
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                normalText(
-                                  text: thisMonthIncom,
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                normalText(
-                                  text: thisMonthExpense,
-                                )
-                              ],
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              boldText(
+                                text: totalNetworth,
+                              ),
+                              SizedBox(
+                                height: screenHeight * 0.01,
+                              ),
+                              Obx(
+                                () {
+                                  double totalAmount =
+                                      controller.totalAmount.value;
+                                  return boldText(
+                                    text: '\$$totalAmount',
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: screenHeight * 0.008,
+                              ),
+                              normalText(
+                                text: thisMonthIncom,
+                              ),
+                              SizedBox(
+                                height: screenHeight * 0.008,
+                              ),
+                              normalText(
+                                text: thisMonthExpense,
+                              )
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    const SizedBox(width: 25),
-                                    SizedBox(
-                                      height: 23,
-                                      width: 23,
-                                      child: Image.asset(
-                                        icReward,
-                                      ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(width: screenWidth * 0.06),
+                                  SizedBox(
+                                    height: 23,
+                                    width: 23,
+                                    child: Image.asset(
+                                      icReward,
                                     ),
-                                    boldText(
-                                      text: myRewards,
+                                  ),
+                                  boldText(
+                                    text: myRewards,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: screenHeight * 0.05,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  SizedBox(
+                                    height: 23,
+                                    width: 23,
+                                    child: Image.asset(icIncome),
+                                  ),
+                                  Obx(
+                                    () => normalText(
+                                      text:
+                                          "\$${controller.oneMonthIncom.value.toString()}",
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 39,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    SizedBox(
-                                      height: 23,
-                                      width: 23,
-                                      child: Image.asset(icIncome),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: screenHeight * 0.006,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: SizedBox(
+                                      height: 19,
+                                      width: 19,
+                                      child: Image.asset(icDecrease),
                                     ),
-                                    Obx(
-                                      () => normalText(
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Obx(
+                                    () => normalText(
                                         text:
-                                            "\$${controller.oneMonthIncom.value.toString()}",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 3),
-                                      child: SizedBox(
-                                        height: 19,
-                                        width: 19,
-                                        child: Image.asset(icDecrease),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Obx(
-                                      () => normalText(
-                                          text:
-                                              "\$${controller.oneMonthExpense.value.toString()}",
-                                          color: Colors.red),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                            "\$${controller.oneMonthExpense.value.toString()}",
+                                        color: Colors.red),
+                                  ),
+                                ],
+                              ),
+                            ],
                           )
                         ],
                       ),
@@ -311,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: screenHeight * 0.03,
             ),
             SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -344,9 +344,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 accounts.length,
                                 (index) {
                                   return homeButtons(
+                                    onPress: () {
+                                      Get.to(() => AccountDetailScreen(
+                                            accounts: accounts[index],
+                                          ));
+                                    },
                                     title: accounts[index]['title'],
                                     amount:
                                         '\$${accounts[index]['currentamount']}',
+                                    width: screenWidth * 0.3,
+                                    height: screenHeight * 0.13,
                                   );
                                 },
                               ),
@@ -355,30 +362,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         })
                   ]),
             ),
-            const SizedBox(
-              height: 15,
+            SizedBox(
+              height: screenHeight * 0.015,
             ),
-            const Divider(
-              color: greyColor,
-              thickness: 1,
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Divider(
+                color: greyColor,
+                thickness: 1,
+              ),
             ),
-            const SizedBox(
-              height: 10,
+            SizedBox(
+              height: screenHeight * 0.02,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: Container(
-                    height: 40,
-                    width: 300,
-                    color: prussianBlue,
-                    child: Center(child: boldText(text: allTransiction)),
-                  ),
+                Container(
+                  height: screenHeight * 0.05,
+                  width: screenWidth * 0.8,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      gradient: LinearGradient(
+                          colors: transColor,
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter)),
+                  child: Center(child: boldText(text: allTransiction)),
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: screenHeight * 0.02,
                 ),
 
                 //All Transiction List
@@ -405,11 +417,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         var isAdded = transaction.transactionType;
 
-                        return Card(
-                          color: cornflowerBlue,
+                        return Container(
+                          height: screenHeight * 0.09,
+                          width: screenWidth * 0.98,
+                          margin: EdgeInsets.only(bottom: screenHeight * 0.008),
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: transColor,
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter),
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                          ),
                           child: ListTile(
-                            onTap: () {
+                            onTap: () async {
+                              int? accountId = transaction.accountId;
+                              String? accountName = await DatabaseHelper()
+                                  .getAccountName(accountId);
+
                               // Handle tap on the transaction
+                              Get.to(() => TransDetailsScreen(
+                                    transaction: transaction,
+                                    accountName: accountName!,
+                                  ));
                             },
                             leading: isAdded == 'added'
                                 ? const Icon(
@@ -427,7 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: whiteColor,
                             ),
                             subtitle: normalText(
-                              text: DateFormat('MMM d, y')
+                              text: DateFormat('MMM dd, y')
                                   .format(transaction.transactionTime),
                               color: const Color.fromARGB(255, 199, 191, 191),
                             ),
@@ -446,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 60)
+            SizedBox(height: screenHeight * 0.08)
           ],
         ),
       ),

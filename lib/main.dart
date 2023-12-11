@@ -1,5 +1,5 @@
 import 'package:daxno_task/constants/colors.dart';
-import 'package:daxno_task/sreens/home_screen/home.dart';
+import 'package:daxno_task/screens/home_screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
