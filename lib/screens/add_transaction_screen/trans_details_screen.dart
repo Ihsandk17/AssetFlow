@@ -1,3 +1,5 @@
+import 'package:daxno_task/controllers/home_controller.dart';
+import 'package:daxno_task/utils/database_helper.dart';
 import 'package:daxno_task/utils/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,6 +19,7 @@ class TransDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +40,7 @@ class TransDetailsScreen extends StatelessWidget {
                 padding: EdgeInsets.only(
                     top: screenHeight * 0.048, left: screenWidth * 0.01),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
                         onPressed: () {
@@ -47,9 +50,58 @@ class TransDetailsScreen extends StatelessWidget {
                           Icons.arrow_back,
                           color: whiteColor,
                         )),
-                    SizedBox(width: screenWidth * 0.16),
+                    SizedBox(width: screenWidth * 0.1),
                     boldText(
                       text: title,
+                    ),
+                    SizedBox(width: screenWidth * 0.1),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            backgroundColor: prussianBlue,
+                            actions: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  normalText(text: 'Edit'),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: whiteColor,
+                                      ))
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  normalText(text: 'remove'),
+                                  IconButton(
+                                      onPressed: () {
+                                        DatabaseHelper().deleteTransaction(
+                                            transaction.transactionId);
+                                        Get.find<HomeController>().refresh();
+                                        Get.back();
+                                        Get.back();
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: whiteColor,
+                                      ))
+                                ],
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        color: whiteColor,
+                      ),
                     ),
                   ],
                 ),
@@ -148,13 +200,22 @@ class TransDetailsScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 normalText(
-                    text: transDesc,
-                    color: const Color.fromARGB(255, 187, 179, 179)),
-                normalText(text: transaction.transactionDes, color: whiteColor),
+                  text: transDesc,
+                  color: const Color.fromARGB(255, 187, 179, 179),
+                ),
+                // normalText(text: transaction.transactionDes, color: whiteColor),
+                Expanded(
+                  child: Text(
+                    '\t${transaction.transactionDes}',
+                    style: const TextStyle(color: whiteColor),
+                    maxLines: 10,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
               ],
             ),
           ),

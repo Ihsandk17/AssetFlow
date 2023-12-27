@@ -12,7 +12,7 @@ const Color greenColor = Colors.greenAccent;
 
 const List<Color> gradientColors = [
   Color.fromRGBO(74, 147, 226, 1),
-  Color.fromRGBO(5, 50, 98, 1),
+  Color.fromARGB(255, 0, 109, 199),
 ];
 const Gradient buttonColor = LinearGradient(
   colors: [
@@ -33,7 +33,13 @@ const Gradient buttonColor2 = LinearGradient(
 
 const List<Color> transColor = [
   Color.fromARGB(255, 0, 109, 199),
-  prussianBlue,
+  Color.fromRGBO(31, 72, 115, 1)
+];
+
+const List<Color> calendarColor = [
+  Color.fromARGB(255, 38, 152, 245),
+  Color.fromARGB(255, 0, 109, 199),
+  darkPrussianBlue,
 ];
 
 // Define a gradient color

@@ -41,10 +41,12 @@ class _DropDownButtonAccState extends State<DropDownButtonAcc> {
         return buildMenuItem(item);
       }).toList(),
       onChanged: (newValue) {
-        setState(() {
-          selectedName = newValue;
+        if (mounted) {
+          setState(() {
+            selectedName = newValue;
+          });
           widget.onSelected(newValue!);
-        });
+        }
       },
       iconEnabledColor: greyColor,
     );

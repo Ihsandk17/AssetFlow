@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print, use_rethrow_when_possible, unnecessary_brace_in_string_interps
 
+import 'dart:async';
+
 import 'package:daxno_task/utils/transaction_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
@@ -58,8 +60,177 @@ class DatabaseHelper {
           changeTime TIMESTAMP
         )
       ''');
+
+        //table for storing profile picture
+        await db.execute(''' CREATE TABLE pic_table(
+          id INTEGER PRIMARY KEY,
+          picture_path TEXT
+        ) 
+        ''');
+
+        //Table for storing pin code
+        await db.execute('''
+  CREATE TABLE pin_codes (
+    id INTEGER PRIMARY KEY,
+    pin_code TEXT,
+    p_name Text
+  )
+''');
       },
     );
+  }
+
+  //Method to check if pin is set
+  Future<bool> isPinSet() async {
+    final Database db = await database;
+
+    List<Map<String, dynamic>> result =
+        await db.query('pin_codes', where: 'pin_code IS NOT NULL');
+    print('is pin set!! $result');
+    return result.isNotEmpty;
+  }
+
+  // Method to set pin code and profile name if not set then insert other wise update
+  Future<void> setPinPName(String pin, String pName) async {
+    final Database db = await database;
+    List<Map<String, dynamic>> result = await db.query('pin_codes');
+    if (result.isNotEmpty) {
+      // Update the existing record
+      await db.update(
+        'pin_codes',
+        {'pin_code': pin, 'p_name': pName},
+        where: 'id = ?',
+        whereArgs: [result.first['id']],
+      );
+      print('setPinPName!! pin code and p_name updated!');
+    } else {
+      // Insert a new record
+      await db.insert(
+        'pin_codes',
+        {'pin_code': pin, 'p_name': pName},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      print('setPinPName!! pin code and p_name inserted');
+    }
+  }
+
+  //Method to delete pin code
+  Future<void> deletPinCode() async {
+    final Database db = await database;
+
+    await db.update('pin_codes', {'pin_code': null}, where: 'id = 1');
+    print('Pin code deleted successfully!!');
+  }
+
+  //Method to set only profile name
+  Future<void> setProfileName(String pin, String pName) async {
+    final Database db = await database;
+    List<Map<String, dynamic>> result = await db.query('pin_codes');
+    if (result.isNotEmpty) {
+      // Update the existing record
+      await db.update(
+        'pin_codes',
+        {'pin_code': null, 'p_name': pName},
+        where: 'id = ?',
+        whereArgs: [result.first['id']],
+      );
+      print('set profile name!! p_name updated!');
+    } else {
+      // Insert a new record
+      await db.insert(
+        'pin_codes',
+        {'pin_code': null, 'p_name': pName},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      print('p_name inserted!!');
+    }
+  }
+
+//Method to verify Pin code
+  Future<bool> verifyPinCode(String enteredPin) async {
+    final Database db = await database;
+    List<Map<String, dynamic>> result = await db.query('pin_codes');
+    if (result.isNotEmpty) {
+      String storedPin = result.first['pin_code'];
+      print('Pin code verifyed!!');
+      return storedPin == enteredPin;
+    } else {
+      print('No pin code set!!');
+      return false; // No pin code set
+    }
+  }
+
+  // Method to retrieve the pin code from the database
+  Future<String?> getPinCode() async {
+    final Database db = await database;
+    List<Map<String, dynamic>> result = await db.query('pin_codes');
+    if (result.isNotEmpty) {
+      return result.first['pin_code'] as String?;
+    } else {
+      return null;
+    }
+  }
+
+  // Method to retrieve the profile name from the database
+  Future<String?> getProfileName() async {
+    final Database db = await database;
+    List<Map<String, dynamic>> result = await db.query('pin_codes');
+
+    if (result.isNotEmpty) {
+      return result.first['p_name'] as String?;
+    } else {
+      return null;
+    }
+  }
+
+  // Method to insert profile picture
+  Future<void> insertPhoto(String imagePath) async {
+    final Database db = await database;
+
+    await db.insert(
+      'pic_table',
+      {'picture_path': imagePath},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print("photo inserted!!");
+  }
+
+  //Method to update profile picture
+  Future<void> updatePhoto(String imagePath) async {
+    final Database db = await database;
+
+    await db.update(
+      'pic_table',
+      {'picture_path': imagePath},
+      where:
+          'id = 1', // Assuming there's only one row in the 'profile_picture' table
+    );
+    print("photo updated!!");
+  }
+
+  //Method to remove profile photo
+  Future<void> deletePhoto() async {
+    final Database db = await database;
+
+    await db.delete(
+      'pic_table',
+      where: 'id = 1',
+    );
+    print('Picture deleted!!');
+  }
+
+  //Method to get profile photo
+  Future<String?> getPhoto() async {
+    final Database db = await database;
+
+    List<Map<String, dynamic>> result = await db.query('pic_table');
+    if (result.isNotEmpty) {
+      print("photo geted!!");
+
+      return result.first['picture_path'] as String?;
+    } else {
+      return null;
+    }
   }
 
   //Create a Method to insert new account into database
@@ -77,17 +248,6 @@ class DatabaseHelper {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    // Log the change in total_amount_changes for the new account
-    // await db.insert(
-    //   'total_amount_changes',
-    //   {
-    //     'changeType': 'added_account',
-    //     'changeAmount': currentAmount.toDouble(),
-    //     'changeTime': DateTime.now().toIso8601String(),
-    //   },
-    //   conflictAlgorithm: ConflictAlgorithm.replace,
-    // );
   }
 
   // Method to get all accounts
@@ -97,7 +257,7 @@ class DatabaseHelper {
     return await db.query('account_name');
   }
 
-  //insert transaction
+  //Method to insert transaction
   Future<void> insertTransaction(
       String accountName, TransactionModel transaction) async {
     final Database db = await database;
@@ -140,6 +300,16 @@ class DatabaseHelper {
       // Handle the error, show a message, or throw the exception again
       throw e;
     }
+  }
+
+  //Method to delete a Transaction
+  Future<void> deleteTransaction(int transactionId) async {
+    final Database db = await database;
+    await db.delete(
+      'transactions',
+      where: 'id = ?',
+      whereArgs: [transactionId],
+    );
   }
 
 //Updeate the account amount after transaction
@@ -251,6 +421,7 @@ class DatabaseHelper {
       // Convert the result to a list of TransactionModel objects
       List<TransactionModel> transactions = result
           .map((Map<String, dynamic> map) => TransactionModel(
+                transactionId: map['id'],
                 accountId: map['accountId'],
                 transactionType: map['transactionType'],
                 transactionName: map['transactionName'],
@@ -273,6 +444,7 @@ class DatabaseHelper {
     // Convert the result to a list of TransactionModel objects
     List<TransactionModel> transactions = result
         .map((Map<String, dynamic> map) => TransactionModel(
+              transactionId: map['id'],
               accountId: map['accountId'],
               transactionType: map['transactionType'],
               transactionName: map['transactionName'],

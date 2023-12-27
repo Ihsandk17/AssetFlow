@@ -59,6 +59,7 @@ class StateScreen extends StatelessWidget {
                             item: accountNames,
                             onSelected: (selectedAcount) async {
                               controller.selectedAccountName.value =
+                                  // ignore: await_only_futures
                                   await selectedAcount;
                             },
                           ),

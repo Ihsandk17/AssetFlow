@@ -10,14 +10,6 @@ class StateController extends GetxController {
   Rx<CalendarView> selectedView = CalendarView.month.obs;
   RxString selectedAccountName = ''.obs;
 
-  void updateSelectedMonth(String month) {
-    selectedMonth.value = month;
-  }
-
-  void updateSelectedView(CalendarView view) {
-    selectedView.value = view;
-  }
-
   void updateSelectedAccountName(String accountName) {
     selectedAccountName.value = accountName;
   }

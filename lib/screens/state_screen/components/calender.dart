@@ -65,112 +65,120 @@ class _CalenderClassState extends State<CalenderClass> {
   }
 
   Widget _buildCalendar(List<Meeting>? dataSource) {
-    return SfCalendar(
-      maxDate: DateTime.now(),
-      view: CalendarView.month,
-      showNavigationArrow: true,
-      backgroundColor: cornflowerBlue,
-      headerHeight: 50,
-      initialSelectedDate: DateTime.now(),
-      headerStyle: const CalendarHeaderStyle(
-        textStyle: TextStyle(color: whiteColor),
-        textAlign: TextAlign.center,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            colors: calendarColor,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter),
       ),
-      viewHeaderStyle: const ViewHeaderStyle(
-        dayTextStyle: TextStyle(color: whiteColor),
-        backgroundColor: greyColor,
-      ),
-      selectionDecoration: BoxDecoration(border: Border.all(color: greyColor)),
-      monthViewSettings: const MonthViewSettings(
-        showAgenda: true,
-        agendaItemHeight: 60,
-        agendaViewHeight: 300,
-        agendaStyle: AgendaStyle(
-          placeholderTextStyle: TextStyle(color: Colors.red),
+      child: SfCalendar(
+        maxDate: DateTime.now(),
+        view: CalendarView.month,
+        showNavigationArrow: true,
+        headerHeight: 50,
+        initialSelectedDate: DateTime.now(),
+        headerStyle: const CalendarHeaderStyle(
+          textStyle: TextStyle(color: whiteColor),
+          textAlign: TextAlign.center,
         ),
-      ),
-      todayTextStyle: const TextStyle(
-        color: prussianBlue,
-      ),
-      todayHighlightColor: greenColor,
-      dataSource: MeetingDataSource(dataSource!),
-      appointmentBuilder:
-          (BuildContext context, CalendarAppointmentDetails details) {
-        final Meeting meeting = details.appointments.first as Meeting;
-
-        List<Color> myColors = [
-          prussianBlue,
-          blackColor,
-          darkPrussianBlue,
-          greyColor,
-          Colors.yellow,
-          Colors.purple,
-          Colors.orange,
-          // Add more colors as needed
-        ];
-
-        return Container(
-          decoration: BoxDecoration(
-            color: myColors[Random().nextInt(myColors.length)],
-            // border: Border.all(
-            //   color:
-            //       Colors.primaries[Random().nextInt(Colors.primaries.length)],
-            // ),
-            borderRadius: BorderRadius.circular(12.0),
+        viewHeaderStyle: const ViewHeaderStyle(
+          dayTextStyle: TextStyle(color: whiteColor),
+          backgroundColor: greyColor,
+        ),
+        selectionDecoration:
+            BoxDecoration(border: Border.all(color: greyColor)),
+        monthViewSettings: const MonthViewSettings(
+          showAgenda: true,
+          agendaItemHeight: 60,
+          agendaViewHeight: 300,
+          agendaStyle: AgendaStyle(
+            placeholderTextStyle: TextStyle(color: Colors.red),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      meeting.eventName,
-                      style: TextStyle(
-                        color: meeting.transactionType == 'added'
-                            ? greenColor
-                            : Colors.red,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      DateFormat('hh:mm a').format(meeting.from),
-                      style: const TextStyle(
-                        color: whiteColor,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      meeting.transactionType,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(
-                      meeting.transactionAmount.toString(),
-                      style: TextStyle(
-                        color: meeting.transactionType == 'added'
-                            ? greenColor
-                            : Colors.red,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+        ),
+        todayTextStyle: const TextStyle(
+          color: prussianBlue,
+        ),
+        todayHighlightColor: greenColor,
+        dataSource: MeetingDataSource(dataSource!),
+        appointmentBuilder:
+            (BuildContext context, CalendarAppointmentDetails details) {
+          final Meeting meeting = details.appointments.first as Meeting;
+
+          List<Color> myColors = [
+            prussianBlue,
+            blackColor,
+            darkPrussianBlue,
+            greyColor,
+            Colors.yellow,
+            Colors.purple,
+            Colors.orange,
+            // Add more colors as needed
+          ];
+
+          return Container(
+            decoration: BoxDecoration(
+              color: myColors[Random().nextInt(myColors.length)],
+              // border: Border.all(
+              //   color:
+              //       Colors.primaries[Random().nextInt(Colors.primaries.length)],
+              // ),
+              borderRadius: BorderRadius.circular(12.0),
             ),
-          ),
-        );
-      },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        meeting.eventName,
+                        style: TextStyle(
+                          color: meeting.transactionType == 'added'
+                              ? greenColor
+                              : Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        DateFormat('hh:mm a').format(meeting.from),
+                        style: const TextStyle(
+                          color: whiteColor,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        meeting.transactionType,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        meeting.transactionAmount.toString(),
+                        style: TextStyle(
+                          color: meeting.transactionType == 'added'
+                              ? greenColor
+                              : Colors.red,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

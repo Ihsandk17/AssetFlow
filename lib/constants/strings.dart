@@ -31,3 +31,6 @@ const title = "Transaction Detail",
     transType = "Transaction Type",
     dateTime = "Date Time",
     amount = "Amount";
+
+//Edit profile screen Strings
+const pinCode = "Pin Code", profileName = "Profile Name";

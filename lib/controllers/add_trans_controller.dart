@@ -43,6 +43,7 @@ class AddTransController extends GetxController {
       // Create a TransactionModel object
       TransactionModel transaction = TransactionModel(
           // Note: accountId will be updated in the insertTransaction method
+          transactionId: 0,
           accountId: 0, // Placeholder value
           transactionType: selectedTransType.value,
           transactionName: transName.value,

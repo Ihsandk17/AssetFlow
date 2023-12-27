@@ -1,4 +1,5 @@
 class TransactionModel {
+  int transactionId;
   int accountId;
   String transactionType;
   String transactionName;
@@ -7,6 +8,7 @@ class TransactionModel {
   double transactionAmount;
 
   TransactionModel({
+    required this.transactionId,
     required this.accountId,
     required this.transactionType,
     required this.transactionName,
@@ -31,6 +33,7 @@ class TransactionModel {
   // Create a TransactionModel object from a Map
   factory TransactionModel.fromMap(Map<String, dynamic> map) {
     return TransactionModel(
+      transactionId: map['id'],
       accountId: map['accountId'],
       transactionType: map['transactionType'],
       transactionName: map['transactionName'],

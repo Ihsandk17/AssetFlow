@@ -1,99 +1,3 @@
-// import 'package:daxno_task/constants/const.dart';
-// import 'package:daxno_task/utils/database_helper.dart';
-// import 'package:daxno_task/widgets/rounded_text_field.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-
-// import '../../../widgets/text_style.dart';
-
-// class AddNewPlan extends StatelessWidget {
-//   const AddNewPlan({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     double screenHeight = MediaQuery.of(context).size.height;
-//     double screenWidth = MediaQuery.of(context).size.width;
-//     final TextEditingController accNameController = TextEditingController();
-//     final TextEditingController currentAmountController =
-//         TextEditingController();
-
-//     //Function to handle the database insertion
-//     Future<void> insertNewAcc() async {
-//       String accName = accNameController.text;
-//       int currentAmount = int.tryParse(currentAmountController.text) ?? 0;
-
-//       //insert into database
-//       await DatabaseHelper().insertAccount(accName, currentAmount);
-//     }
-
-//     return Scaffold(
-//       body: Column(
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         children: [
-//           Padding(
-//             padding: EdgeInsets.only(left: screenWidth * 0.015),
-//             child: Container(
-//               width: screenWidth * 1,
-//               height: screenHeight * 0.12,
-//               decoration: const BoxDecoration(
-//                 boxShadow: [BoxShadow(blurRadius: 1.0, color: Colors.black)],
-//                 color: prussianBlue,
-//                 borderRadius: BorderRadius.only(
-//                   bottomLeft: Radius.circular(20),
-//                 ),
-//               ),
-//               child: Padding(
-//                 padding: EdgeInsets.only(
-//                     top: screenHeight * 0.048, left: screenWidth * 0.01),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   children: [
-//                     IconButton(
-//                         onPressed: () {
-//                           Get.back();
-//                         },
-//                         icon: const Icon(
-//                           Icons.arrow_back,
-//                           color: whiteColor,
-//                         )),
-//                     SizedBox(width: screenWidth * 0.16),
-//                     boldText(
-//                       text: "Add New Plan!",
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//           SizedBox(height: screenHeight * 0.07),
-//           roundedTextField(
-//             labelText: "Account Name",
-//             hintText: "Account Name",
-//             textInputType: TextInputType.name,
-//             controller: accNameController,
-//           ),
-//           SizedBox(height: screenHeight * 0.04),
-//           roundedTextField(
-//             labelText: "Current Amount",
-//             hintText: "Current Amount",
-//             controller: currentAmountController,
-//             textInputType: TextInputType.number,
-//           ),
-//           SizedBox(height: screenHeight * 0.05),
-//           ElevatedButton(
-//             onPressed: () {
-//               insertNewAcc();
-//               Get.back();
-//             },
-//             style: ElevatedButton.styleFrom(backgroundColor: cornflowerBlue),
-//             child: boldText(text: "Create"),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 import 'package:daxno_task/constants/const.dart';
 import 'package:daxno_task/controllers/add_trans_controller.dart';
 import 'package:daxno_task/utils/database_helper.dart';
@@ -120,6 +24,18 @@ class AddNewPlan extends StatelessWidget {
       String accName = accNameController.text;
       String desc = descController.text;
       int currentAmount = int.tryParse(currentAmountController.text) ?? 0;
+
+      List<String> existingAccountNames =
+          await DatabaseHelper().getAllAccountNames();
+      if (existingAccountNames.contains(accName)) {
+        Get.snackbar("Error!",
+            "Account name '$accName' already exists. Please choose a different name.",
+            backgroundColor: Colors.red,
+            snackPosition: SnackPosition.BOTTOM,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3));
+        return;
+      }
 
       await DatabaseHelper().insertAccount(accName, desc, currentAmount);
       addTransController.calculateTotalAmount();
@@ -152,47 +68,76 @@ class AddNewPlan extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: constraints.maxHeight > 600 ? 35 : 25),
-                roundedTextField(
-                  labelText: "Account Name",
-                  hintText: "Account Name",
-                  textInputType: TextInputType.name,
-                  controller: accNameController,
-                ),
-                SizedBox(height: constraints.maxHeight > 600 ? 30 : 20),
-                roundedTextField(
-                  labelText: "Current Amount",
-                  hintText: "Current Amount",
-                  controller: currentAmountController,
-                  textInputType: TextInputType.number,
-                ),
-                SizedBox(height: constraints.maxWidth > 600 ? 30 : 20),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 25),
-                    child: Text(
-                      "(Optional)",
-                      style: TextStyle(color: greyColor),
-                    ),
+                Container(
+                  margin:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                  decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                          colors: transColor,
+                          end: Alignment.bottomCenter,
+                          begin: Alignment.topCenter),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(25),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color.fromARGB(255, 0, 0, 0)
+                              .withOpacity(0.5), // Shadow color
+                          spreadRadius: 2, // Spread radius
+                          blurRadius: 7, // Blur radius
+                          offset: const Offset(0, 5), // Offset
+                        )
+                      ]),
+                  child: Column(
+                    children: [
+                      SizedBox(height: constraints.maxHeight > 600 ? 30 : 20),
+                      roundedTextField(
+                        labelText: "Account Name",
+                        hintText: "Account Name",
+                        textInputType: TextInputType.name,
+                        controller: accNameController,
+                      ),
+                      SizedBox(height: constraints.maxHeight > 600 ? 30 : 20),
+                      roundedTextField(
+                        labelText: "Current Amount",
+                        hintText: "Current Amount",
+                        controller: currentAmountController,
+                        textInputType: TextInputType.number,
+                      ),
+                      SizedBox(height: constraints.maxWidth > 600 ? 30 : 20),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 25),
+                          child: Text(
+                            "(Optional)",
+                            style: TextStyle(color: greyColor),
+                          ),
+                        ),
+                      ),
+                      roundedTextField(
+                        hintText: "i.e: about transaction",
+                        labelText: "Description",
+                        textInputType: TextInputType.text,
+                        controller: descController,
+                      ),
+                      SizedBox(height: constraints.maxWidth > 600 ? 50 : 30),
+                      ElevatedButton(
+                        onPressed: () {
+                          insertNewAcc();
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 0, 109, 199)),
+                        child: boldText(text: "create"),
+                      ),
+                      SizedBox(height: constraints.maxHeight > 600 ? 5 : 5),
+                    ],
                   ),
                 ),
-                roundedTextField(
-                  hintText: "i.e: about transaction",
-                  labelText: "Description",
-                  textInputType: TextInputType.text,
-                  controller: descController,
-                ),
-                SizedBox(height: constraints.maxWidth > 600 ? 50 : 30),
-                ElevatedButton(
-                  onPressed: () {
-                    insertNewAcc();
-                    Get.back();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: cornflowerBlue,
-                  ),
-                  child: boldText(text: "create"),
-                )
               ],
             ),
           );

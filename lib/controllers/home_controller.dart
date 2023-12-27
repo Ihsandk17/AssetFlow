@@ -129,16 +129,4 @@ class HomeController extends GetxController {
       this.oneMonthExpense.value = oneMonthExpense;
     } catch (e) {}
   }
-
-  Future<List<Map<String, dynamic>>> updateLineChartData() async {
-    try {
-      // Get total amount changes from the database
-      List<Map<String, dynamic>> totalChanges =
-          await DatabaseHelper().getTotalAmountChanges();
-      return totalChanges;
-    } catch (e) {
-      print('Error updating line chart data: $e');
-    }
-    return [];
-  }
 }

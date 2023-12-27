@@ -50,139 +50,201 @@ class AddTransScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: screenHeight * 0.05),
-
-            roundedTextField(
-              hintText: "i.e purchased",
-              labelText: "Transaction Name",
-              textInputType: TextInputType.name,
-              controller: nameController,
-            ),
-            SizedBox(height: screenHeight * 0.04),
-            roundedTextField(
-              hintText: "i.e 1000",
-              labelText: "Amount",
-              textInputType: TextInputType.number,
-              controller: amountController,
-            ),
-            SizedBox(height: screenHeight * 0.016),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: screenWidth * 0.07),
-                child: const Text(
-                  "(Optional)",
-                  style: TextStyle(color: greyColor),
-                ),
-              ),
-            ),
-            roundedTextField(
-              hintText: "i.e: about transaction",
-              labelText: "Description",
-              textInputType: TextInputType.text,
-              controller: desController,
-            ),
-            SizedBox(height: screenHeight * 0.04),
-            //choose expand or added
             Container(
-              height: screenHeight * 0.065,
-              width: screenWidth * 0.95,
-              decoration: const BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.all(Radius.circular(25))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  normalText(
-                      text: "choose type: ", color: greyColor, size: 18.0),
-                  DropDownButtonAcc(
-                    item: items,
-                    onSelected: (selectedTransType) {
-                      controller.selectedTransType.value = selectedTransType;
-                    },
+              margin: EdgeInsets.all(screenWidth * 0.04),
+              padding: EdgeInsets.only(
+                  bottom: screenHeight * 0.02, top: screenHeight * 0.05),
+              decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                      colors: transColor,
+                      end: Alignment.bottomCenter,
+                      begin: Alignment.topCenter),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(25),
                   ),
-                ],
-              ),
-            ),
-
-            //choos account
-            SizedBox(height: screenHeight * 0.04),
-            Container(
-              height: screenHeight * 0.065,
-              width: screenWidth * 0.95,
-              decoration: const BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.all(Radius.circular(25))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 0, 0, 0)
+                          .withOpacity(0.5), // Shadow color
+                      spreadRadius: 2, // Spread radius
+                      blurRadius: 7, // Blur radius
+                      offset: const Offset(0, 5), // Offset
+                    )
+                  ]),
+              child: Column(
                 children: [
-                  normalText(
-                      text: "choose account: ", color: greyColor, size: 18.0),
-                  FutureBuilder<List<String>>(
-                    future: DatabaseHelper().getAllAccountNames(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.data == null ||
-                          snapshot.data!.isEmpty) {
-                        return normalText(
-                            text: "No Account!",
-                            color: greyColor); // or any other fallback widget
-                      } else {
-                        List<String> accountNames = snapshot.data!;
+                  roundedTextField(
+                    hintText: "i.e purchased",
+                    labelText: "Transaction Name",
+                    textInputType: TextInputType.name,
+                    controller: nameController,
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+                  roundedTextField(
+                    hintText: "i.e 1000",
+                    labelText: "Amount",
+                    textInputType: TextInputType.number,
+                    controller: amountController,
+                  ),
+                  SizedBox(height: screenHeight * 0.016),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: screenWidth * 0.07),
+                      child: const Text(
+                        "(Optional)",
+                        style: TextStyle(color: greyColor),
+                      ),
+                    ),
+                  ),
+                  roundedTextField(
+                    hintText: "i.e: about transaction",
+                    labelText: "Description",
+                    textInputType: TextInputType.text,
+                    controller: desController,
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+                  //choose expand or added
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+                    child: Container(
+                      height: screenHeight * 0.065,
+                      width: screenWidth * 0.95,
+                      decoration: const BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(25),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                color: darkPrussianBlue,
+                                blurRadius: 2,
+                                spreadRadius: 1,
+                                offset: Offset(1, 2))
+                          ]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          normalText(
+                              text: "choose type: ",
+                              color: greyColor,
+                              size: 18.0),
+                          DropDownButtonAcc(
+                            item: items,
+                            onSelected: (selectedTransType) {
+                              controller.selectedTransType.value =
+                                  selectedTransType;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
 
-                        return DropDownButtonAcc(
-                          item: accountNames,
-                          onSelected: (selectedAccount) {
-                            controller.selectedAccount.value = selectedAccount;
-                          },
+                  //choos account
+                  SizedBox(height: screenHeight * 0.04),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+                    child: Container(
+                      height: screenHeight * 0.065,
+                      width: screenWidth * 0.95,
+                      decoration: const BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(25),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                color: darkPrussianBlue,
+                                blurRadius: 2,
+                                spreadRadius: 1,
+                                offset: Offset(1, 2))
+                          ]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          normalText(
+                              text: "choose account: ",
+                              color: greyColor,
+                              size: 18.0),
+                          FutureBuilder<List<String>>(
+                            future: DatabaseHelper().getAllAccountNames(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.data == null ||
+                                  snapshot.data!.isEmpty) {
+                                return normalText(
+                                    text: "No Account!",
+                                    color:
+                                        greyColor); // or any other fallback widget
+                              } else {
+                                List<String> accountNames = snapshot.data!;
+
+                                return DropDownButtonAcc(
+                                  item: accountNames,
+                                  onSelected: (selectedAccount) {
+                                    controller.selectedAccount.value =
+                                        selectedAccount;
+                                  },
+                                );
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Retrieve transaction name and amount
+                      final String transName = nameController.text;
+                      final String transAmount = amountController.text;
+                      final String transDes = desController.text;
+
+                      try {
+                        //Create a transaction object
+                        TransactionModel transaction = TransactionModel(
+                          transactionId: 0,
+                          accountId: 0,
+                          transactionType: controller.selectedTransType.value,
+                          transactionName: transName,
+                          transactionDes: transDes,
+                          transactionTime: DateTime.now(),
+                          transactionAmount: double.parse(transAmount),
                         );
+
+                        // Insert the new transaction into the database
+                        await DatabaseHelper().insertTransaction(
+                          controller.selectedAccount.value,
+                          transaction,
+                        );
+
+                        controller.calculateTotalAmount();
+
+                        // Reset the form
+                        controller.selectedAccount.value = '';
+                        controller.selectedTransType.value = '';
+                        nameController.text = '';
+                        amountController.text = '';
+                        desController.text = '';
+                      } catch (e) {
+                        // Handle the exception, e.g., show an error message
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 0, 109, 199)),
+                    child: boldText(text: " Save "),
                   )
                 ],
               ),
-            ),
-            SizedBox(height: screenHeight * 0.04),
-            ElevatedButton(
-              onPressed: () async {
-                // Retrieve transaction name and amount
-                final String transName = nameController.text;
-                final String transAmount = amountController.text;
-                final String transDes = desController.text;
-
-                try {
-                  //Create a transaction object
-                  TransactionModel transaction = TransactionModel(
-                    accountId: 0,
-                    transactionType: controller.selectedTransType.value,
-                    transactionName: transName,
-                    transactionDes: transDes,
-                    transactionTime: DateTime.now(),
-                    transactionAmount: double.parse(transAmount),
-                  );
-
-                  // Insert the new transaction into the database
-                  await DatabaseHelper().insertTransaction(
-                    controller.selectedAccount.value,
-                    transaction,
-                  );
-
-                  controller.calculateTotalAmount();
-
-                  // Reset the form
-                  controller.selectedAccount.value = '';
-                  controller.selectedTransType.value = '';
-                  nameController.text = '';
-                  amountController.text = '';
-                  desController.text = '';
-                } catch (e) {
-                  // Handle the exception, e.g., show an error message
-                }
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: cornflowerBlue),
-              child: boldText(text: " Save "),
             )
           ],
         ),

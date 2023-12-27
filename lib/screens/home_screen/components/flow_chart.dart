@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'package:daxno_task/constants/colors.dart';
-import 'package:daxno_task/controllers/home_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +8,9 @@ class LineChart2 extends StatefulWidget {
   const LineChart2({
     Key? key,
     required this.totalChangedData,
-    required this.homeController,
   }) : super(key: key);
 
   final List<Map<String, dynamic>> totalChangedData;
-  final HomeController homeController;
 
   @override
   State<LineChart2> createState() => _LineChart2State();
@@ -101,8 +98,6 @@ class _LineChart2State extends State<LineChart2> {
       );
     }).toList();
 
-    print("spots data:: $spots");
-
     return LineChartData(
       gridData: FlGridData(
         show: false,
@@ -157,17 +152,17 @@ class _LineChart2State extends State<LineChart2> {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          // spots: spots,
+          spots: spots,
 
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          // spots: const [
+          //   FlSpot(0, 3),
+          //   FlSpot(2.6, 2),
+          //   FlSpot(4.9, 5),
+          //   FlSpot(6.8, 3.1),
+          //   FlSpot(8, 4),
+          //   FlSpot(9.5, 3),
+          //   FlSpot(11, 4),
+          // ],
           isCurved: true,
           gradient: const LinearGradient(
             colors: gradientColors,
@@ -182,7 +177,7 @@ class _LineChart2State extends State<LineChart2> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              stops: const [0.0, 1.0],
+              // stops: const [0.0, 1.0],
               colors: gradientColors
                   .map((color) => color.withOpacity(0.3))
                   .toList(),

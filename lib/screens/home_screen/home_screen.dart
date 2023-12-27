@@ -41,7 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
     controller.calculateTotalAmount();
     await controller.calculateOneMonthIncome();
     await controller.calculateOneMonthExpense();
-    await controller.updateLineChartData();
+    // Fetch total amount changes
+    // ignore: unused_local_variable
+    List<Map<String, dynamic>> totalAmountChanges =
+        await DatabaseHelper().getTotalAmountChanges();
   }
 
   @override
@@ -155,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: screenHeight * 0.29,
                         width: double.infinity,
                         child: FutureBuilder<List<Map<String, dynamic>>>(
-                          future: controller.updateLineChartData(),
+                          future: DatabaseHelper().getTotalAmountChanges(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -167,14 +170,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 final changeData = snapshot.data;
 
                                 // ignore: avoid_print
-                                print("change data!!!! $changeData");
+                                print('change data $changeData');
+
                                 return LineChart2(
                                   totalChangedData: changeData!,
-                                  homeController: controller,
                                 );
-                                // return LineChart(
-                                //   totalChangedData: changeData!,
-                                // );
                               } else {
                                 return Center(
                                   child: boldText(
@@ -221,10 +221,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               Obx(
                                 () {
-                                  double totalAmount =
-                                      controller.totalAmount.value;
-                                  return boldText(
-                                    text: '\$$totalAmount',
+                                  return TweenAnimationBuilder<double>(
+                                    tween: Tween<double>(
+                                      begin: 0,
+                                      end: controller.totalAmount.value,
+                                    ),
+                                    duration: const Duration(seconds: 3),
+                                    builder: (BuildContext context,
+                                        double value, Widget? child) {
+                                      return boldText(
+                                        text: '\$${value.toStringAsFixed(2)}',
+                                      );
+                                    },
                                   );
                                 },
                               ),
@@ -343,17 +351,25 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: List.generate(
                                 accounts.length,
                                 (index) {
-                                  return homeButtons(
-                                    onPress: () {
-                                      Get.to(() => AccountDetailScreen(
-                                            accounts: accounts[index],
-                                          ));
+                                  return TweenAnimationBuilder(
+                                    tween: Tween<double>(
+                                      begin: 0.0,
+                                      end: accounts[index]['currentamount'],
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                    builder: (context, double value, child) {
+                                      return homeButtons(
+                                        onPress: () {
+                                          Get.to(() => AccountDetailScreen(
+                                                accounts: accounts[index],
+                                              ));
+                                        },
+                                        title: accounts[index]['title'],
+                                        amount: '\$${value.toStringAsFixed(2)}',
+                                        width: screenWidth * 0.3,
+                                        height: screenHeight * 0.13,
+                                      );
                                     },
-                                    title: accounts[index]['title'],
-                                    amount:
-                                        '\$${accounts[index]['currentamount']}',
-                                    width: screenWidth * 0.3,
-                                    height: screenHeight * 0.13,
                                   );
                                 },
                               ),
@@ -434,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               String? accountName = await DatabaseHelper()
                                   .getAccountName(accountId);
 
-                              // Handle tap on the transaction
+                              //Tap on the transaction
                               Get.to(() => TransDetailsScreen(
                                     transaction: transaction,
                                     accountName: accountName!,

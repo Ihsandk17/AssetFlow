@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:daxno_task/constants/const.dart';
 import 'package:daxno_task/controllers/more_controller.dart';
+import 'package:daxno_task/utils/database_helper.dart';
+import 'package:daxno_task/widgets/circular_indicator.dart';
 import 'package:daxno_task/widgets/more_screen_buttons.dart';
 import 'package:daxno_task/widgets/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+
+import 'components/profile_picture_screen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -14,39 +19,7 @@ class MoreScreen extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    final MoreController controller = Get.put(MoreController());
-
-    void showImagePickerOptions(BuildContext context) {
-      showModalBottomSheet(
-        backgroundColor: greenColor,
-        context: context,
-        builder: (BuildContext context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  controller.image.value =
-                      await controller.pickImage(ImageSource.gallery);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  controller.image.value =
-                      await controller.pickImage(ImageSource.camera);
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
+    final MoreController controller = MoreController();
 
     return SafeArea(
       child: Scaffold(
@@ -59,42 +32,68 @@ class MoreScreen extends StatelessWidget {
                 height: screenHeight * 0.03,
               ),
               Center(
-                child: Obx(
-                  () => Stack(
-                    children: [
-                      controller.image.value != null
-                          ? CircleAvatar(
-                              radius: screenWidth * 0.18,
-                              backgroundImage:
-                                  MemoryImage(controller.image.value!),
-                            )
-                          : CircleAvatar(
-                              radius: screenWidth * 0.18,
-                              backgroundImage: const NetworkImage(
-                                  'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701_640.png'),
+                child: Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (controller.image.value != null) {
+                          Get.to(
+                            () => ProfilePictureScreen(
+                              imagePath: controller.image.value,
+                              heroTag: 'profilePicture',
                             ),
-                      Positioned(
-                        bottom: -10,
-                        left: 80,
-                        child: IconButton(
-                          onPressed: () => showImagePickerOptions(context),
-                          icon: const Icon(
-                            Icons.add_a_photo,
-                            color: whiteColor,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                          );
+                        } else {
+                          return;
+                        }
+                      },
+                      child: Hero(
+                          tag: 'profilePicture',
+                          child: FutureBuilder(
+                              future: controller.updatePhoto(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return circularIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return CircleAvatar(
+                                    radius: screenWidth * 0.18,
+                                    backgroundImage: controller.image.value !=
+                                            null
+                                        ? FileImage(
+                                                File(controller.image.value!))
+                                            as ImageProvider<Object>?
+                                        : const NetworkImage(
+                                            'https://cdn.pixabay.com/photo/2019/08/11/18/59/icon-4399701_640.png'),
+                                  );
+                                }
+                              })),
+                    ),
+                  ],
                 ),
               ),
 
               SizedBox(
                 height: screenHeight * 0.050,
               ),
+              FutureBuilder(
+                  future: DatabaseHelper().getProfileName(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return circularIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text("Error: ${snapshot.error}");
+                    } else {
+                      String? name = snapshot.data;
+                      final bool isNameAvailable = snapshot.hasData;
 
-              boldText(text: "Profile Name", textAlign: TextAlign.center),
-
+                      return isNameAvailable
+                          ? boldText(text: name, textAlign: TextAlign.center)
+                          : normalText(text: "Name not set yet!");
+                    }
+                  }),
               Padding(
                 padding: EdgeInsets.only(
                     left: screenWidth * 0.05,
